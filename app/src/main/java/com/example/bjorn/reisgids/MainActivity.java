@@ -12,19 +12,18 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
+    private SQLiteDatabase reisgidsDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 
-
-
         //DB aanmaken of openen
 
 
-
-        SQLiteDatabase reisgidsDB = this.openOrCreateDatabase("reisgidsDB", MODE_PRIVATE, null);
+        reisgidsDB = this.openOrCreateDatabase("reisgidsDB", MODE_PRIVATE, null);
 
         reisgidsDB.execSQL("CREATE TABLE IF NOT EXISTS "
                 + "Amsterdam"
@@ -33,50 +32,40 @@ public class MainActivity extends AppCompatActivity {
         reisgidsDB.execSQL("CREATE TABLE IF NOT EXISTS "
                 + "Petersburg"
                 + " (Activiteiten VARCHAR, Informatie VARCHAR ); ");
-
-
-
-        //Gegevens aanmaken
-
-        reisgidsDB.execSQL("INSERT INTO "
-                + "Amsterdam"
-                + " (Activiteiten, Informatie)"
-                + " VALUES ('De dam bezoeken', 'Monument op de dam ter herdenking van de slachtoffers in de tweede wereldoorlog');");
-
-        reisgidsDB.execSQL("INSERT INTO "
-                + "Petersburg"
-                + " (Activiteiten, Informatie)"
-                + " VALUES ('State Hermitage Museum bezoeken', 'Kunst en cultuur museum in Rusland');");
-
-
-
-
-
 
         //Testen of de database bestaat
 
 
-
         File dbFile = getDatabasePath("reisgidsDB");
-        if(dbFile.exists())
+        if (dbFile.exists()) {
+            //Gegevens aanmaken
 
-        {
-            Log.i("reisgids DB", "bestaat");
-        }else
-        {
+            reisgidsDB.execSQL("INSERT INTO "
+                    + "Amsterdam"
+                    + " (Activiteiten, Informatie)"
+                    + " VALUES ('De dam bezoeken', 'Monument op de dam ter herdenking van de slachtoffers in de tweede wereldoorlog');");
+
+            reisgidsDB.execSQL("INSERT INTO "
+                    + "Petersburg"
+                    + " (Activiteiten, Informatie)"
+                    + " VALUES ('State Hermitage Museum bezoeken', 'Kunst en cultuur museum in Rusland');");
+
+
+        } else {
             Log.i("reisgids DB", "bestaat niet");
         }
+
+
 
     }
 
 
     //Maak buttons die de layout veranderen onclick en haal de gegevens uit de database en show ze daar
 
-    public void onClickAmsterdam(View v)
-    {
-        SQLiteDatabase reisgidsDB = this.openOrCreateDatabase("reisgidsDB", MODE_PRIVATE, null);
+    public void onClickAmsterdam(View v) {
+
         setContentView(R.layout.amsterdam);
-        Cursor c = reisgidsDB.rawQuery("SELECT * FROM " + "Amsterdam" , null);
+        Cursor c = reisgidsDB.rawQuery("SELECT * FROM " + "Amsterdam", null);
         int Kolom1 = c.getColumnIndex("Activiteiten");
         int Kolom2 = c.getColumnIndex("Informatie");
         c.moveToFirst();
@@ -91,13 +80,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void onClickPetersburg(View v) {
 
-    public void onClickPetersburg(View v)
-    {
-
-        SQLiteDatabase reisgidsDB = this.openOrCreateDatabase("reisgidsDB", MODE_PRIVATE, null);
         setContentView(R.layout.petersburg);
-        Cursor c = reisgidsDB.rawQuery("SELECT * FROM " + "Petersburg" , null);
+        Cursor c = reisgidsDB.rawQuery("SELECT * FROM " + "Petersburg", null);
         int Kolom1 = c.getColumnIndex("Activiteiten");
         int Kolom2 = c.getColumnIndex("Informatie");
         c.moveToFirst();
@@ -113,8 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onClickTerug(View v)
-    {
+    public void onClickTerug(View v) {
         setContentView(R.layout.activity_main);
     }
 
